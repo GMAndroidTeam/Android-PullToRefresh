@@ -25,7 +25,9 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.FrameLayout;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -341,6 +343,75 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 			super.setEmptyView(emptyView);
 		}
 
+	}
+
+	// zhangmao add the code below for bug 4374 2015-01-04
+
+	private int getHeadersHeight() {
+		int headersHeight = 0;
+		ListAdapter listAdapter = getRefreshableView().getAdapter();
+		if (listAdapter instanceof HeaderViewListAdapter) {
+			HeaderViewListAdapter headerViewListAdapter = ((HeaderViewListAdapter) listAdapter);
+			int headerCount = headerViewListAdapter.getHeadersCount();
+			for (int i = 0; i < headerCount; i++) {
+				View view = headerViewListAdapter.getView(i, null, null);
+				headersHeight += view.getMeasuredHeight();
+			}
+		}
+		return headersHeight;
+	}
+
+	@Override
+	protected boolean isReadyForPullStart() {
+		if (getHeadersHeight() > getHeight()) {
+			return isScrolledToTop();
+		} else {
+			final Adapter adapter = mRefreshableView.getAdapter();
+			if (null == adapter || adapter.isEmpty()) {
+				return true;
+			} else {
+				return isScrolledToTop();
+			}
+		}
+	}
+
+	private boolean isScrolledToTop() {
+		if (mRefreshableView.getFirstVisiblePosition() <= 1) {
+			final View firstVisibleChild = mRefreshableView.getChildAt(0);
+			if (firstVisibleChild != null) {
+				return firstVisibleChild.getTop() >= mRefreshableView.getTop();
+			}
+		}
+		return false;
+	}
+
+	@Override
+	protected boolean isReadyForPullEnd() {
+		if (getHeadersHeight() > getHeight()) {
+			return isScrolledToBottom();
+		} else {
+			final Adapter adapter = mRefreshableView.getAdapter();
+			if (null == adapter || adapter.isEmpty()) {
+				return true;
+			} else {
+				return isScrolledToBottom();
+			}
+		}
+	}
+
+	private boolean isScrolledToBottom() {
+		final int lastItemPosition = mRefreshableView.getCount() - 1;
+		final int lastVisiblePosition = mRefreshableView.getLastVisiblePosition();
+
+		if (lastVisiblePosition >= lastItemPosition - 1) {
+			final int childIndex = lastVisiblePosition - mRefreshableView.getFirstVisiblePosition();
+			final View lastVisibleChild = mRefreshableView.getChildAt(childIndex);
+			if (lastVisibleChild != null) {
+				return lastVisibleChild.getBottom() <= mRefreshableView.getBottom();
+			}
+		}
+
+		return false;
 	}
 
 }
