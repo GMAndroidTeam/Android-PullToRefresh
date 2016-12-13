@@ -44,3 +44,5 @@ proguard_logs/
 .DS_Store
 
 *.keystore
+/app/app.iml
+/library/library.iml

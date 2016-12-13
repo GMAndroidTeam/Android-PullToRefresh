@@ -17,3 +17,5 @@ allprojects {
         jcenter()
     }
 }
+// 不生成doc文档
+tasks.findByPath(":library:androidJavadocs").enabled = false
