@@ -25,6 +25,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -289,9 +290,11 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
         private boolean mAddedLvFooter = false;
         private int mLastMotionX;
         private int mLastMotionY;
+        private int mTouchSlop;
 
         public InternalListView(Context context, AttributeSet attrs) {
             super(context, attrs);
+            mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         }
 
         @Override
@@ -335,30 +338,25 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 
         @Override
         public boolean onInterceptTouchEvent(MotionEvent ev) {
-            int y = (int) ev.getY();
-            int x = (int) ev.getX();
-            boolean resume = false;
+
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    // 发生down事件时,记录y坐标
-                    mLastMotionY = y;
-                    mLastMotionX = x;
-                    resume = false;
+                    // 发生down事件时,记录x、y坐标
+                    mLastMotionY = (int) ev.getX();
+                    mLastMotionX = (int) ev.getY();
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    // deltaY > 0 是向下运动,< 0是向上运动
-                    int deltaY = y - mLastMotionY;
-                    int deltaX = x - mLastMotionX;
-                    if (Math.abs(deltaY) > Math.abs(deltaX)) {
-                        return true;
+                    int deltaX = (int) ev.getX() - mLastMotionX;
+                    int deltaY = (int) ev.getY() - mLastMotionY;
+
+                    if (deltaY > mTouchSlop && deltaY > 1000 * deltaX) {
+                        // 消费事件
+                        return super.onInterceptTouchEvent(ev);
                     } else {
                         return false;
                     }
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    break;
             }
-            return resume;
+            return super.onInterceptTouchEvent(ev);
         }
 
         @Override
