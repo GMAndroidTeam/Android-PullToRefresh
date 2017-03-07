@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2014 Dean Ding.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,13 +22,13 @@ import android.util.AttributeSet;
 import com.handmark.pulltorefresh.R;
 
 /**
- *
  * Support RecyclerView
  *
  * @author Dean.Ding
- *
  */
 public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
+
+    private boolean isAutoLoadMore = false;
 
     public PullToRefreshRecyclerView(Context context) {
         super(context);
@@ -46,6 +46,13 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
         super(context, mode, style);
     }
 
+    /**
+     * 设置自动加载更多
+     */
+    public void setAutoLoadMore() {
+        isAutoLoadMore = true;
+    }
+
     @Override
     public final Orientation getPullToRefreshScrollDirection() {
         return Orientation.VERTICAL;
@@ -56,7 +63,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
         RecyclerView recyclerView;
         recyclerView = new RecyclerView(context, attrs);
         recyclerView.setId(R.id.recyclerview);
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -65,8 +72,11 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (isReadyLoadMore()){
-                    if (null != mOnRefreshListener2){
+                if (!isAutoLoadMore) {
+                    return;
+                }
+                if (isReadyLoadMore()) {
+                    if (null != mOnRefreshListener2) {
                         mOnRefreshListener2.onPullUpToRefresh(PullToRefreshRecyclerView.this);
                     }
                 }
@@ -89,12 +99,16 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
 
     @Override
     public boolean isReadyForPullEnd() {
-        return false;
+        if (isAutoLoadMore) {
+            return false;
+        } else {
+            return isReadyLoadMore();
+        }
     }
 
-    public boolean isReadyLoadMore(){
-        int lastVisiblePosition = mRefreshableView.getChildPosition(mRefreshableView.getChildAt(mRefreshableView.getChildCount() -1));
-        if (lastVisiblePosition >= mRefreshableView.getAdapter().getItemCount()-1) {
+    public boolean isReadyLoadMore() {
+        int lastVisiblePosition = mRefreshableView.getChildPosition(mRefreshableView.getChildAt(mRefreshableView.getChildCount() - 1));
+        if (lastVisiblePosition >= mRefreshableView.getAdapter().getItemCount() - 1) {
             return mRefreshableView.getChildAt(mRefreshableView.getChildCount() - 1).getBottom() <= mRefreshableView.getBottom();
         }
         return false;
