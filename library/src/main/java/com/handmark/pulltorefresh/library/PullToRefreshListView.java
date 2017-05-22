@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011, 2012 Chris Banes.
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,12 +25,11 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-
 import com.handmark.pulltorefresh.R;
+
 import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
 import com.handmark.pulltorefresh.library.internal.LoadingLayout;
 
@@ -41,7 +40,7 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 
     private FrameLayout mLvFooterLoadingFrame;
 
-    private boolean mListViewExtrasEnabled;
+    private boolean			mListViewExtrasEnabled;
 
     public PullToRefreshListView(Context context) {
         super(context);
@@ -130,11 +129,11 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 
     /**
      * created by Michael at 2015-01-07
-     * 使listview滚动时位于覆盖物（顶部栏）下边
-     *
-     * @param topMargin 覆盖物的高度
+     * 		使listview滚动时位于覆盖物（顶部栏）下边
+     * @param topMargin
+     * 			覆盖物的高度
      */
-    public void setTopCovered(int topMargin) {
+    public void setTopCovered(int topMargin){
         this.getRefreshableView().setPadding(0, topMargin, 0, 0);
         this.getRefreshableView().setClipToPadding(false);
         this.getRefreshableView().setClipChildren(false);
@@ -238,7 +237,6 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
     @Override
     protected void handleStyledAttributes(TypedArray a) {
         super.handleStyledAttributes(a);
-
         mListViewExtrasEnabled = a.getBoolean(R.styleable.PullToRefresh_ptrListViewExtrasEnabled, true);
 
         if (mListViewExtrasEnabled) {
@@ -287,14 +285,10 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 
     protected class InternalListView extends ListView implements EmptyViewMethodAccessor {
 
-        private boolean mAddedLvFooter = false;
-        private int mLastMotionX;
-        private int mLastMotionY;
-        private int mTouchSlop;
+        private boolean	mAddedLvFooter	= false;
 
         public InternalListView(Context context, AttributeSet attrs) {
             super(context, attrs);
-            mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         }
 
         @Override
@@ -334,29 +328,6 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
             }
 
             super.setAdapter(adapter);
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    // 发生down事件时,记录x、y坐标
-                    mLastMotionY = (int) ev.getX();
-                    mLastMotionX = (int) ev.getY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    int deltaX = (int) ev.getX() - mLastMotionX;
-                    int deltaY = (int) ev.getY() - mLastMotionY;
-
-                    if (deltaY > mTouchSlop && deltaY > 1000 * deltaX) {
-                        // 消费事件
-                        return super.onInterceptTouchEvent(ev);
-                    } else {
-                        return false;
-                    }
-            }
-            return super.onInterceptTouchEvent(ev);
         }
 
         @Override

@@ -34,6 +34,8 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.gengmei.base.PageDataUtil;
+import com.gengmei.statistics.StatisticsSDK;
 import com.handmark.pulltorefresh.R;
 import com.handmark.pulltorefresh.library.internal.FlipLoadingLayout;
 import com.handmark.pulltorefresh.library.internal.LoadingLayout;
@@ -41,6 +43,8 @@ import com.handmark.pulltorefresh.library.internal.RotateLoadingLayout;
 import com.handmark.pulltorefresh.library.internal.ScaleRotateLoadingLayout;
 import com.handmark.pulltorefresh.library.internal.Utils;
 import com.handmark.pulltorefresh.library.internal.ViewCompat;
+
+import java.util.HashMap;
 
 public abstract class PullToRefreshBase<T extends View> extends LinearLayout implements IPullToRefresh<T> {
 
@@ -1079,8 +1083,12 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
         } else if (null != mOnRefreshListener2) {
             if (mCurrentMode == Mode.PULL_FROM_START) {
                 mOnRefreshListener2.onPullDownToRefresh(this);
+                // 埋点
+                statistics("refresh_page");
             } else if (mCurrentMode == Mode.PULL_FROM_END) {
                 mOnRefreshListener2.onPullUpToRefresh(this);
+                // 埋点
+                statistics("upload_page");
             }
         }
     }
@@ -1693,4 +1701,17 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
         void onSmoothScrollFinished();
     }
 
+    /**
+     * 埋点
+     * @param type 埋点类型
+     */
+    private void statistics (String type){
+        try {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("page_name", PageDataUtil.getPageData(PullToRefreshBase.this).pageName);
+            StatisticsSDK.onEvent(type, params);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }
