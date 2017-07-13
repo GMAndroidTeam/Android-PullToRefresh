@@ -107,7 +107,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
     }
 
     public boolean isReadyLoadMore() {
-        if (null == mRefreshableView) {
+        if (null == mRefreshableView || null == mRefreshableView.getAdapter()) {
             return false;
         }
         int lastVisiblePosition = mRefreshableView.getChildPosition(mRefreshableView.getChildAt(mRefreshableView.getChildCount() - 1));
