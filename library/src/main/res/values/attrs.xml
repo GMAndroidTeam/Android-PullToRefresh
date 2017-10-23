@@ -47,6 +47,9 @@
         <!-- Base text color, typeface, size, and style for Header and Footer Loading Views -->
         <attr name="ptrHeaderTextAppearance" format="reference" />
 
+        <!-- header动画下沉距离，为了解决首页奇葩需求 -->
+        <attr name="ptrHeaderSink" format="dimension" />
+
         <!-- Base text color, typeface, size, and style for Header and Footer Loading Views Sub Header -->
         <attr name="ptrSubHeaderTextAppearance" format="reference" />
 

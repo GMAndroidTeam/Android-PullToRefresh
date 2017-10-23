@@ -105,6 +105,9 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     private SmoothScrollRunnable   mCurrentSmoothScrollRunnable;
 
+    // header动画下沉距离
+    private int mHeaderSink = 0;
+
     // ===========================================================
     // Constructors
     // ===========================================================
@@ -1121,6 +1124,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
             mLoadingAnimationStyle = AnimationStyle.mapIntToValue(a.getInteger(R.styleable.PullToRefresh_ptrAnimationStyle, 0));
         }
 
+        mHeaderSink = a.getDimensionPixelOffset(R.styleable.PullToRefresh_ptrHeaderSink, 0);
         // Refreshable View
         // By passing the attrs, we can add ListView/GridView params via XML
         mRefreshableView = createRefreshableView(context, attrs);
@@ -1243,7 +1247,9 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
             return new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
         case VERTICAL:
         default:
-            return new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 0, 0, mHeaderSink);
+            return layoutParams;
         }
     }
 
