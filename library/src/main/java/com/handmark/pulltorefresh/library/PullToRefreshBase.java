@@ -97,7 +97,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
     private AnimationStyle         mLoadingAnimationStyle             = AnimationStyle.getDefault();
 
     private LoadingLayout mHeaderLayout;
-    private LoadingLayout mFooterLayout;
+    public LoadingLayout mFooterLayout;
 
     public OnRefreshListener<T>   mOnRefreshListener;
     public OnRefreshListener2<T>  mOnRefreshListener2;

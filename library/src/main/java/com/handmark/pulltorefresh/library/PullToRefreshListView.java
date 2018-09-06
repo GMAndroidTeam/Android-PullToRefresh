@@ -251,7 +251,7 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 
             mLvFooterLoadingFrame = new FrameLayout(getContext());
             mFooterLoadingView = createLoadingLayout(getContext(), Mode.PULL_FROM_END, a);
-            mFooterLoadingView.setVisibility(View.GONE);
+            mFooterLoadingView.setVisibility(View.VISIBLE);
             mLvFooterLoadingFrame.addView(mFooterLoadingView, lp);
 
             /**

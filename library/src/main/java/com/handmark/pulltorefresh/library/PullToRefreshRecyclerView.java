@@ -16,6 +16,7 @@
 package com.handmark.pulltorefresh.library;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
@@ -59,6 +60,11 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
     }
 
     @Override
+    protected void handleStyledAttributes(TypedArray a) {
+        super.handleStyledAttributes(a);
+    }
+
+    @Override
     protected RecyclerView createRefreshableView(Context context, AttributeSet attrs) {
         RecyclerView recyclerView;
         recyclerView = new RecyclerView(context, attrs);
@@ -77,6 +83,8 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
                 }
                 if (isReadyLoadMore()) {
                     if (null != mOnRefreshListener2) {
+                        setCurrentMode(Mode.PULL_FROM_END);
+                        setState(State.REFRESHING, true);
                         mOnRefreshListener2.onPullUpToRefresh(PullToRefreshRecyclerView.this);
                     }
                 }
