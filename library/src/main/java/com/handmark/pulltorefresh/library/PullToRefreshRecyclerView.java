@@ -76,10 +76,8 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
                     return;
                 }
                 if (isReadyLoadMore()) {
-                    if (null != mOnRefreshListener2) {
-                        setCurrentMode(Mode.PULL_FROM_END);
-                        setState(State.REFRESHING, true);
-                    }
+                    setCurrentMode(Mode.PULL_FROM_END);
+                    setState(State.REFRESHING, true);
                 }
             }
         });
