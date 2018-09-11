@@ -109,7 +109,13 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
         if (null == mRefreshableView || null == mRefreshableView.getAdapter()) {
             return false;
         }
+        int firstVisiblePosition = mRefreshableView.getChildPosition(mRefreshableView.getChildAt(0));
         int lastVisiblePosition = mRefreshableView.getChildPosition(mRefreshableView.getChildAt(mRefreshableView.getChildCount() - 1));
+        int visibleItemCount = lastVisiblePosition - firstVisiblePosition;
+        if (visibleItemCount == 0 || visibleItemCount == mRefreshableView.getAdapter().getItemCount()){
+            //判断是否一屏显示完，如果一屏显示完成就不自动加载更多了
+            return false;
+        }
         if (lastVisiblePosition >= mRefreshableView.getAdapter().getItemCount() - 1) {
             return mRefreshableView.getChildAt(mRefreshableView.getChildCount() - 1).getBottom() <= mRefreshableView.getBottom();
         }
