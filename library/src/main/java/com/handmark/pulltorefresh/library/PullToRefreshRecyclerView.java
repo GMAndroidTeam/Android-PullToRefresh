@@ -30,6 +30,10 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
 
     private boolean isAutoLoadMore = false;
 
+    private boolean hasHeaderView = false;
+
+    private boolean hasFooterView = false;
+
     public PullToRefreshRecyclerView(Context context) {
         super(context);
     }
@@ -51,6 +55,20 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
      */
     public void setAutoLoadMore() {
         isAutoLoadMore = true;
+    }
+
+    /**
+     * 是否有headerview
+     */
+    public void HasHeaderView(){
+        hasHeaderView = true;
+    }
+
+    /**
+     * 是否有footerview
+     */
+    public void HasFooterView(){
+        hasFooterView = true;
     }
 
     @Override
@@ -112,7 +130,9 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
         int firstVisiblePosition = mRefreshableView.getChildPosition(mRefreshableView.getChildAt(0));
         int lastVisiblePosition = mRefreshableView.getChildPosition(mRefreshableView.getChildAt(mRefreshableView.getChildCount() - 1));
         int visibleItemCount = lastVisiblePosition - firstVisiblePosition;
-        if (visibleItemCount == 0 || visibleItemCount == mRefreshableView.getAdapter().getItemCount()){
+        int headerViewCount = hasHeaderView ? 1 : 0;
+        int footerViewCount = hasFooterView ? 1 : 0;
+        if (visibleItemCount == 0 || visibleItemCount == mRefreshableView.getAdapter().getItemCount() - headerViewCount - footerViewCount){
             //判断是否一屏显示完，如果一屏显示完成就不自动加载更多了
             return false;
         }
