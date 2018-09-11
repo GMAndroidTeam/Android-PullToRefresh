@@ -116,7 +116,8 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
 
     @Override
     public boolean isReadyForPullEnd() {
-        if (isAutoLoadMore) {
+        int lastVisiblePosition = mRefreshableView.getChildPosition(mRefreshableView.getChildAt(mRefreshableView.getChildCount() - 1));
+        if (isAutoLoadMore && lastVisiblePosition < mRefreshableView.getAdapter().getItemCount() - 1) {
             return false;
         } else {
             return isReadyLoadMore();
