@@ -105,6 +105,8 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
     private SmoothScrollRunnable   mCurrentSmoothScrollRunnable;
 
+    public boolean isLoadingMore = false;
+
     // header动画下沉距离
     private int mHeaderSink = 0;
 
@@ -553,6 +555,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
         switch (mState) {
         case RESET:
             onReset();
+            isLoadingMore = false;
             break;
         case PULL_TO_REFRESH:
             onPullToRefresh();
@@ -562,6 +565,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
             break;
         case REFRESHING:
         case MANUAL_REFRESHING:
+            isLoadingMore = true;
             onRefreshing(params[0]);
             break;
         case OVERSCROLLING:
