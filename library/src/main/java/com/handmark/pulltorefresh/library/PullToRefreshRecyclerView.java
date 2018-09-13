@@ -60,14 +60,14 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
     /**
      * 是否有headerview
      */
-    public void HasHeaderView(){
+    public void hasHeaderView(){
         hasHeaderView = true;
     }
 
     /**
      * 是否有footerview
      */
-    public void HasFooterView(){
+    public void hasFooterView(){
         hasFooterView = true;
     }
 
@@ -90,7 +90,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!isAutoLoadMore || isLoadingMore) {
+                if (!isAutoLoadMore || isLoadingMore || hasFooterView) {
                     return;
                 }
                 if (isReadyLoadMore()) {
@@ -117,7 +117,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<RecyclerView> {
     @Override
     public boolean isReadyForPullEnd() {
         int lastVisiblePosition = mRefreshableView.getChildPosition(mRefreshableView.getChildAt(mRefreshableView.getChildCount() - 1));
-        if (isAutoLoadMore && lastVisiblePosition < mRefreshableView.getAdapter().getItemCount() - 1) {
+        if (isAutoLoadMore && lastVisiblePosition < mRefreshableView.getAdapter().getItemCount() - 1 || hasFooterView) {
             return false;
         } else {
             return isReadyLoadMore();

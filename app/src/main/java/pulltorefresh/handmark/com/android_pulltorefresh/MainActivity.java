@@ -57,6 +57,7 @@ public class MainActivity extends Activity implements PullToRefreshBase.OnRefres
         for (int i = 0; i < 10; i++) {
             mBeans.add("加载更多" + i);
         }
+        listView.hasFooterView();
         listView.postDelayed(new Runnable() {
             @Override
             public void run() {
