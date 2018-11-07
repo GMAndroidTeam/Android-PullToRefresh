@@ -89,7 +89,7 @@
         <attr name="ptrDrawableBottom" format="reference" />
     </declare-styleable>
     <declare-styleable name="SlidingMenu">
-        <attr name="mode">
+        <attr name="SlidingMenuMode">
             <enum name="left" value="0" />
             <enum name="right" value="1" />
         </attr>
